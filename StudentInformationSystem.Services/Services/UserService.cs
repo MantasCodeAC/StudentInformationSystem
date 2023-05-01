@@ -25,9 +25,9 @@ namespace StudentInformationSystem.Services.Services
             _configuration = configuration;
         }
 
-        public ResponseDto Login(string username, string password)
+        public async Task<ResponseDto> LoginAsync(string username, string password)
         {
-            var user = _repository.GetUserAsync(username);
+            var user = await _repository.GetUserAsync(username);
             if (user is null)
                 return new ResponseDto(false, "Username or password does not match");
 
@@ -38,18 +38,18 @@ namespace StudentInformationSystem.Services.Services
             return new ResponseDto(true, token);
         }
 
-        public ResponseDto Signup(string username, string password)
+        public async Task<ResponseDto> SignupAsync(string username, string password)
         {
-            var user = _repository.GetUserAsync(username);
+            var user = await _repository.GetUserAsync(username);
             if (user is not null)
                 return new ResponseDto(false, "User already exists");
 
-            user = CreateUser(username, password);
-            _repository.SaveUserAsync(user);
+            user = await CreateUserAsync(username, password);
+            await _repository.SaveUserAsync(user);
             return new ResponseDto(true);
         }
 
-        private User CreateUser(string username, string password)
+        private static async Task<User> CreateUserAsync(string username, string password)
         {
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User
@@ -60,20 +60,20 @@ namespace StudentInformationSystem.Services.Services
                 PasswordSalt = passwordSalt,
                 role = new User.Role()
             };
-            return user;
+            return await Task.FromResult(user);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using var hmac = new HMACSHA512();
             passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using var hmac = new HMACSHA512(passwordSalt);
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
             return computedHash.SequenceEqual(passwordHash);
         }

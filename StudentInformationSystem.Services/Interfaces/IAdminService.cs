@@ -9,6 +9,6 @@ namespace StudentInformationSystem.Services.Interfaces
 {
     public interface IAdminService
     {
-        ResponseDto DeleteUser(Guid userIdToDelete);
+        Task<ResponseDto> DeleteUserAsync(Guid userIdToDelete);
     }
 }

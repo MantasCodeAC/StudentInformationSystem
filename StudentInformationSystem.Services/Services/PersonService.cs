@@ -26,26 +26,26 @@ namespace StudentInformationSystem.Services.Services
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
-        public ResponseDto AddPerson(string firstName, string lastName, int personalCode, string phoneNumber, string email, ImageUploadRequest imageUploadRequest, ResidenceDto residenceDto)
+        public async Task<ResponseDto> AddPersonAsync(string firstName, string lastName, int personalCode, string phoneNumber, string email, ImageUploadRequest imageUploadRequest, ResidenceDto residenceDto)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            var existingPerson = _repository.GetPersonAsync(personalCode);
+            var existingPerson = await _repository.GetPersonAsync(personalCode);
             if (existingPerson is not null)
                 return new ResponseDto(false, "Person already exists in a database");
-            if (CheckIfUserHasPerson(currentUserId) is not null)
+            if (await CheckIfUserHasPersonAsync(currentUserId) is not null)
                 return new ResponseDto(false, "This User's Personal information is already filled");
             Person person = CreatePerson(firstName, lastName, personalCode, phoneNumber, email, imageUploadRequest, residenceDto);
             person.UserId = currentUserId;
-            _repository.CreatePersonAsync(person);
+            await _repository.CreatePersonAsync(person);
             return new ResponseDto(true, $"{person.FirstName} {person.LastName} successfully added to database");
         }
-        public ResponseDto GetPersonInfo(Guid personId)
+        public async Task<ResponseDto> GetPersonInfoAsync(Guid personId)
         {
-            Person existingPerson = _repository.GetPersonAsync(personId);
+            Person existingPerson = await _repository.GetPersonAsync(personId);
             if (existingPerson is null)
                 return new ResponseDto(false, "Person couldn't be found by this ID");
-            Residence existingResidence = _repository.GetResidenceAsync(personId);
-            ProfilePicture existingProfilePicture = _repository.GetProfilePictureByPersonAsync(personId);
+            Residence existingResidence = await _repository.GetResidenceAsync(personId);
+            ProfilePicture existingProfilePicture = await _repository.GetProfilePictureByPersonAsync(personId);
             byte[] byteArray = existingProfilePicture.Data;
             return new ResponseDto(true, 
                 $"Person Name: {existingPerson.FirstName}" + Environment.NewLine +
@@ -57,81 +57,81 @@ namespace StudentInformationSystem.Services.Services
                 $"{existingResidence.HouseNumber} {existingResidence.ApartmentNumber}" + Environment.NewLine +
                 $"Profile Picture Data: {Convert.ToBase64String(byteArray, 0, byteArray.Length)}");
         }
-        public ResponseDto UpdatePersonName(string personName)
+        public async Task<ResponseDto> UpdatePersonNameAsync(string personName)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
             person.FirstName = personName;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person FirstName changed to {personName}");
         }
-        public ResponseDto UpdatePersonLastName(string personLastName)
+        public async Task<ResponseDto> UpdatePersonLastNameAsync(string personLastName)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
             person.LastName = personLastName;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person LastName changed to {personLastName}");
         }
-        public ResponseDto UpdatePersonalCode(int personalCode)
+        public async Task<ResponseDto> UpdatePersonalCodeAsync(int personalCode)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
             person.PersonalCode = personalCode;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person PersonalCode changed to {personalCode}");
         }
-        public ResponseDto UpdatePersonPhone(string personPhone)
+        public async Task<ResponseDto> UpdatePersonPhoneAsync(string personPhone)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
             person.PhoneNumber = personPhone;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person Phone Number changed to {personPhone}");
         }
-        public ResponseDto UpdatePersonEmail(string personEmail)
+        public async Task<ResponseDto> UpdatePersonEmailAsync(string personEmail)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
             person.Email = personEmail;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person Email changed to {personEmail}");
         }
-        public ResponseDto UpdatePersonResidence(ResidenceDto residenceDto)
+        public async Task<ResponseDto> UpdatePersonResidenceAsync(ResidenceDto residenceDto)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
-            Residence residence = _repository.GetResidenceAsync(person.PersonID);
+            var residence = await _repository.GetResidenceAsync(person.PersonID);
             residence.City = residenceDto.City;
             residence.Street = residenceDto.Street;
             residence.HouseNumber = residenceDto.HouseNumber;
             residence.ApartmentNumber = residenceDto.ApartmentNumber;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person residence address was changed");
         }
-        public ResponseDto UpdateProfilePicture(ImageUploadRequest imageUploadRequest)
+        public async Task<ResponseDto> UpdateProfilePictureAsync(ImageUploadRequest imageUploadRequest)
         {
             var currentUserId = Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId());
-            Person person = CheckIfUserHasPerson(currentUserId);
+            var person = await CheckIfUserHasPersonAsync(currentUserId);
             if (person is null)
                 return new ResponseDto(false, "This User's Personal information is empty");
-            ProfilePicture profilePicture = _repository.GetProfilePictureByPersonAsync(person.PersonID);
+            var profilePicture = await _repository.GetProfilePictureByPersonAsync(person.PersonID);
             var newPicture = CreateProfilePicture(imageUploadRequest);
             profilePicture.Data = newPicture.Data;
             profilePicture.Name = newPicture.Name;
-            _repository.UpdatePersonAsync();
+            await _repository.UpdatePersonAsync();
             return new ResponseDto(true, $"Person Profile Picture was changed");
         }
 
@@ -182,9 +182,9 @@ namespace StudentInformationSystem.Services.Services
             byte[] xByte = (byte[])_imageConverter.ConvertTo(x, typeof(byte[]));
             return xByte;
         }
-        private Person CheckIfUserHasPerson(Guid userId)
+        private async Task<Person> CheckIfUserHasPersonAsync(Guid userId)
         {
-            return _repository.GetPersonByUserAsync(userId);
+            return await _repository.GetPersonByUserAsync(userId);
         }
     }
 }

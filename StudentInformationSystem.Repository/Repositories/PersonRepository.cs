@@ -1,4 +1,5 @@
-﻿using StudentInformationSystem.Repository.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StudentInformationSystem.Repository.Data;
 using StudentInformationSystem.Repository.Model.RepositoryModels;
 using System;
 using System.Collections.Generic;
@@ -16,45 +17,45 @@ namespace StudentInformationSystem.Repository.Repositories
             _context = context;
         }
 
-        public void CreatePersonAsync(Person person)
+        public async Task CreatePersonAsync(Person person)
         {
-            _context.Persons.Add(person);
-            _context.SaveChanges();
+            await _context.Persons.AddAsync(person);
+            await _context.SaveChangesAsync();
         }
 
-        public void DeletePersonAsync(Person person)
+        public async Task DeletePersonAsync(Person person)
         {
             _context.Persons.Remove(person);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public ProfilePicture GetProfilePictureByPersonAsync(Guid personId)
+        public async Task<ProfilePicture> GetProfilePictureByPersonAsync(Guid personId)
         {
-            return _context.ProfilePictures.SingleOrDefault(x => x.PersonID==personId);
+            return await _context.ProfilePictures.SingleOrDefaultAsync(x => x.PersonID==personId);
         }
 
-        public Person GetPersonAsync(Guid personId)
+        public async Task<Person> GetPersonAsync(Guid personId)
         {
-            return _context.Persons.SingleOrDefault(x => x.PersonID == personId);
+            return await _context.Persons.SingleOrDefaultAsync(x => x.PersonID == personId);
         }
 
-        public Person GetPersonAsync(int PersonalCode)
+        public async Task<Person> GetPersonAsync(int PersonalCode)
         {
-            return _context.Persons.SingleOrDefault(x => x.PersonalCode == PersonalCode);
+            return await _context.Persons.SingleOrDefaultAsync(x => x.PersonalCode == PersonalCode);
         }
-        public Person GetPersonByUserAsync(Guid userId)
+        public async Task<Person> GetPersonByUserAsync(Guid userId)
         {
-            return _context.Persons.SingleOrDefault(x => x.UserId == userId);
-        }
-
-        public Residence GetResidenceAsync(Guid personId)
-        {
-            return _context.Residences.SingleOrDefault(x => x.PersonID == personId);
+            return await _context.Persons.SingleOrDefaultAsync(x => x.UserId == userId);
         }
 
-        public void UpdatePersonAsync()
+        public async Task<Residence> GetResidenceAsync(Guid personId)
         {
-            _context.SaveChanges();
+            return await _context.Residences.SingleOrDefaultAsync(x => x.PersonID == personId);
+        }
+
+        public async Task UpdatePersonAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

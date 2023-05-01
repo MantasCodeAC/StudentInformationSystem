@@ -21,78 +21,77 @@ namespace StudentInformationSystem.Controllers
             _personService = personService;
         }
         [HttpPost("CreatePerson")]
-        public ActionResult<ResponseDto> CreatePerson([FromForm] PersonDto personDto)
+        public async Task<ActionResult<ResponseDto>> CreatePersonsync([FromForm] PersonDto personDto)
         {
-            var response = _personService.AddPerson(personDto.FirstName, personDto.LastName, personDto.PersonalCode,
+            var response = await _personService.AddPersonAsync(personDto.FirstName, personDto.LastName, personDto.PersonalCode,
                 personDto.PhoneNumber, personDto.Email, personDto.ImageUploadRequest, personDto.ResidenceDto);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;           
         }
         [HttpGet("GetPersonInfoById")]
-        public ActionResult<string> GetPersonInfo([Required] Guid personId)
+        public async Task<ActionResult<string>> GetPersonInfoAsync([Required] Guid personId)
         {
-            var response = _personService.GetPersonInfo(personId);             
+            var response = await _personService.GetPersonInfoAsync(personId);             
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response.Message;
         }
         [HttpPut("ModifyPersonName")]
-        public ActionResult<ResponseDto> ModifyName([Required] string newName)
+        public async Task<ActionResult<ResponseDto>> ModifyNameAsync([Required] string newName)
         {
-            var response = _personService.UpdatePersonName(newName);
+            var response = await _personService.UpdatePersonNameAsync(newName);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonLastName")]
-        public ActionResult<ResponseDto> ModifyLastName([Required] string newLastName)
+        public async Task<ActionResult<ResponseDto>> ModifyLastNameAsync([Required] string newLastName)
         {
-            var response = _personService.UpdatePersonLastName(newLastName);
+            var response = await _personService.UpdatePersonLastNameAsync(newLastName);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonalCode")]
-        public ActionResult<ResponseDto> ModifyPersonalCode([Required] int personalCode)
+        public async Task<ActionResult<ResponseDto>> ModifyPersonalCodeAsync([Required] int personalCode)
         {
-            var response = _personService.UpdatePersonalCode(personalCode);
+            var response = await _personService.UpdatePersonalCodeAsync(personalCode);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonEmail")]
-        public ActionResult<ResponseDto> ModifyEmail([Required] string email)
+        public async Task<ActionResult<ResponseDto>> ModifyEmailAsync([Required] string email)
         {
-            var response = _personService.UpdatePersonEmail(email);
+            var response = await _personService.UpdatePersonEmailAsync(email);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonPhone")]
-        public ActionResult<ResponseDto> ModifyPhone([Required] string phone)
+        public async Task<ActionResult<ResponseDto>> ModifyPhoneAsync([Required] string phone)
         {
-            var response = _personService.UpdatePersonPhone(phone);
+            var response = await _personService.UpdatePersonPhoneAsync(phone);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonResidenceAddress")]
-        public ActionResult<ResponseDto> ModifyPersonResidenceAddress([FromQuery]ResidenceDto newResidence)
+        public async Task<ActionResult<ResponseDto>> ModifyPersonResidenceAddressAsync([FromQuery]ResidenceDto newResidence)
         {
-            var response = _personService.UpdatePersonResidence(newResidence);
+            var response = await _personService.UpdatePersonResidenceAsync(newResidence);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
         [HttpPut("ModifyPersonProfilePicture")]
-        public ActionResult<ResponseDto> ModifyPersonProfilePicture([FromForm] ImageUploadRequest imageUploadRequest)
+        public async Task<ActionResult<ResponseDto>> ModifyPersonProfilePictureAsync([FromForm] ImageUploadRequest imageUploadRequest)
         {
-            var response = _personService.UpdateProfilePicture(imageUploadRequest);
+            var response = await _personService.UpdateProfilePictureAsync(imageUploadRequest);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;
         }
-
     }
 }

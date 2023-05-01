@@ -9,7 +9,7 @@ namespace StudentInformationSystem.Services.Interfaces
 {
     public interface IUserService
     {
-        ResponseDto Signup(string username, string password);
-        ResponseDto Login(string username, string password);
+        Task<ResponseDto> SignupAsync(string username, string password);
+        Task<ResponseDto> LoginAsync(string username, string password);
     }
 }

@@ -22,17 +22,17 @@ namespace StudentInformationSystem.Services.Services
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
         }
-        public ResponseDto DeleteUser(Guid userIdToDelete)
+        public async Task<ResponseDto> DeleteUserAsync(Guid userIdToDelete)
         {           
-            User currentUser = _repository.GetUserAsync(Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId()));
+            var currentUser = await _repository.GetUserAsync(Guid.Parse(_httpContextAccessor.HttpContext.User.Identity.GetUserId()));
             if (currentUser.role == 0)
                 return new ResponseDto(false, "This User doesn't have Admin rights");
-            User userToDelete = _repository.GetUserAsync(userIdToDelete);
+            var userToDelete = await _repository.GetUserAsync(userIdToDelete);
             if (userToDelete is null)
             {
                 return new ResponseDto(false, "User to delete ID doesn't exist");
             }
-            _repository.DeleteUserAsync(userToDelete);
+            await _repository.DeleteUserAsync(userToDelete);
             return new ResponseDto(true, $"User {userToDelete.Username} and all related information successfully removed");
         }
     }

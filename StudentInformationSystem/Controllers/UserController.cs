@@ -18,18 +18,18 @@ namespace StudentInformationSystem.Controllers
         }
 
         [HttpPost("Login")]
-        public ActionResult Login([FromQuery] UserDto request)
+        public async Task<ActionResult> LoginAsync([FromQuery] UserDto request)
         {
-            var response = _userService.Login(request.Username, request.Password);
+            var response = await _userService.LoginAsync(request.Username, request.Password);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return Ok(response.Message);
         }
 
         [HttpPost("Signup")]
-        public ActionResult<ResponseDto> Signup([FromQuery] UserDto request)
+        public async Task<ActionResult<ResponseDto>> SignupAsync([FromQuery] UserDto request)
         {
-            var response = _userService.Signup(request.Username, request.Password);
+            var response = await _userService.SignupAsync(request.Username, request.Password);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;

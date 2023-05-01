@@ -18,9 +18,9 @@ namespace StudentInformationSystem.Controllers
             _adminService = adminservice;
         }
         [HttpDelete("DeleteUser")]
-        public ActionResult<ResponseDto> DeleteUser([Required]Guid userIdToDelete)
+        public async Task<ActionResult<ResponseDto>> DeleteUserAsync([Required]Guid userIdToDelete)
         {
-            var response = _adminService.DeleteUser(userIdToDelete);
+            var response = await _adminService.DeleteUserAsync(userIdToDelete);
             if (!response.IsSuccess)
                 return BadRequest(response.Message);
             return response;

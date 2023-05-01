@@ -10,14 +10,14 @@ namespace StudentInformationSystem.Services.Interfaces
 {
     public interface IPersonService
     {
-        ResponseDto AddPerson(string firstName, string lastName, int personalCode, string phoneNumber, string email, ImageUploadRequest imageUploadRequest, ResidenceDto residenceDto);
-        ResponseDto UpdatePersonName(string personName);
-        ResponseDto UpdatePersonLastName(string personLastName);
-        ResponseDto UpdatePersonalCode(int personalCode);
-        ResponseDto UpdatePersonPhone(string personPhone);
-        ResponseDto UpdatePersonEmail(string personEmail);
-        ResponseDto UpdatePersonResidence(ResidenceDto residenceDto);
-        ResponseDto UpdateProfilePicture(ImageUploadRequest imageUploadRequest);
-        ResponseDto GetPersonInfo(Guid personId);
+        Task<ResponseDto> AddPersonAsync(string firstName, string lastName, int personalCode, string phoneNumber, string email, ImageUploadRequest imageUploadRequest, ResidenceDto residenceDto);
+        Task<ResponseDto> UpdatePersonNameAsync(string personName);
+        Task<ResponseDto> UpdatePersonLastNameAsync(string personLastName);
+        Task<ResponseDto> UpdatePersonalCodeAsync(int personalCode);
+        Task<ResponseDto> UpdatePersonPhoneAsync(string personPhone);
+        Task<ResponseDto> UpdatePersonEmailAsync(string personEmail);
+        Task<ResponseDto> UpdatePersonResidenceAsync(ResidenceDto residenceDto);
+        Task<ResponseDto> UpdateProfilePictureAsync(ImageUploadRequest imageUploadRequest);
+        Task<ResponseDto> GetPersonInfoAsync(Guid personId);
     }
 }
