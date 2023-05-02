@@ -21,7 +21,7 @@ namespace StudentInformationSystem.Controllers
             _personService = personService;
         }
         [HttpPost("CreatePerson")]
-        public async Task<ActionResult<ResponseDto>> CreatePersonsync([FromForm] PersonDto personDto)
+        public async Task<ActionResult<ResponseDto>> CreatePersonAsync([FromForm] PersonDto personDto)
         {
             var response = await _personService.AddPersonAsync(personDto.FirstName, personDto.LastName, personDto.PersonalCode,
                 personDto.PhoneNumber, personDto.Email, personDto.ImageUploadRequest, personDto.ResidenceDto);
