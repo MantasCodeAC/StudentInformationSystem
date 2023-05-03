@@ -31,14 +31,6 @@ Admin API Delete User
 ### Code Architecture
 ![Code Architecture](https://user-images.githubusercontent.com/112958092/235635354-b072117b-d9a8-400e-b800-473c1021f86f.png)
 
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-  npm run test
-```
-
 
 ## License
 
